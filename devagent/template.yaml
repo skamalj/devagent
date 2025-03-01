@@ -1,0 +1,44 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  devagent
+
+  Sample SAM Template for devagent triggered via SQS
+
+Globals:
+  Function:
+    Timeout: 60
+    Environment:
+      Variables:
+        SQS_QUEUE_URL: !Ref DevAgentQueueUrl
+        GITHUB_TOKEN: '{{resolve:secretsmanager:GITHUB_TOKEN}}'
+
+Parameters:
+  DevAgentQueueUrl:
+    Type: String
+    Description: "URL of the existing SQS queue for devagent"
+
+Resources:
+  SQSTriggerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: agent/
+      Handler: app.lambda_handler
+      Runtime: python3.10
+      Architectures:
+        - x86_64
+      Events:
+        SQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !Ref DevAgentQueueUrl
+            BatchSize: 5
+      Policies:
+        - SQSPollerPolicy:
+            QueueName: !Select [5, !Split [":", !Ref DevAgentQueueUrl]]
+        - SecretsManagerReadWrite
+
+Outputs:
+  SQSTriggerFunction:
+    Description: "Lambda Function ARN triggered via SQS"
+    Value: !GetAtt SQSTriggerFunction.Arn
