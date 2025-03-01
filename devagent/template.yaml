@@ -16,6 +16,7 @@ Globals:
 Parameters:
   DevAgentQueueUrl:
     Type: String
+    Default: "https://sqs.ap-south-1.amazonaws.com/010526271896/LokiToJarvisQueue"
     Description: "URL of the existing SQS queue for devagent"
 
 Resources:
@@ -35,7 +36,7 @@ Resources:
             BatchSize: 5
       Policies:
         - SQSPollerPolicy:
-            QueueName: !Select [5, !Split [":", !Ref DevAgentQueueUrl]]
+            QueueName: "LokiToJarvisQueue"
         - SecretsManagerReadWrite
 
 Outputs:
