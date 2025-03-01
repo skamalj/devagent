@@ -2,4 +2,3 @@ requests
 gitpython
 langgraph
 langchain-core
-base64
