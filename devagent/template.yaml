@@ -11,7 +11,7 @@ Globals:
     Environment:
       Variables:
         SQS_QUEUE_URL: !Ref DevAgentQueueUrl
-        GITHUB_TOKEN: '{{resolve:secretsmanager:GITHUB_TOKEN}}'
+        GITHUB_TOKEN: '{{resolve:secretsmanager:DEV_AGENT_GITHUB_PAT}}'
 
 Parameters:
   DevAgentQueueUrl:
