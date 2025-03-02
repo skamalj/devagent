@@ -22,6 +22,7 @@ def clone_repo(repo_url: str, local_path: str) -> git.Repo:
         repo.remotes.origin.pull()
     else:
         repo = git.Repo.clone_from(repo_url, local_path)
+    print("Repository cloned")
     return repo
 
 @tool
@@ -59,7 +60,7 @@ def update_content_between_lines(file_path: str, start_line, end_line, new_conte
         file.writelines(lines)
 
 @tool
-def commit_and_push_changes(local_path: str, branch_name: str, commit_message: str) -> None:
+def commit_and_push_changes(local_path: str, branch_name: str, commit_message: str) -> str:
     """
     Commits and pushes changes to a new branch.
     
@@ -73,6 +74,8 @@ def commit_and_push_changes(local_path: str, branch_name: str, commit_message: s
     repo.git.add(A=True)
     repo.git.commit('-m', commit_message)
     repo.git.push('--set-upstream', 'origin', branch_name)
+    return "Tool created and pushed"
+    print("New tool created and pushed")
 
 @tool
 def create_pull_request(repo_owner: str, repo_name: str, branch_name: str, base_branch: str, pr_title: str, pr_body: str) -> Dict:
@@ -96,6 +99,7 @@ def create_pull_request(repo_owner: str, repo_name: str, branch_name: str, base_
     headers = {"Authorization": f"token {github_token}", "Accept": "application/vnd.github.v3+json"}
     data = {"title": pr_title, "body": pr_body, "head": branch_name, "base": base_branch}
     response = requests.post(url, json=data, headers=headers)
+    print("Pull Request Created")
     return response.json()
 
 @tool
