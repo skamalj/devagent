@@ -184,5 +184,24 @@ def create_new_branch(local_path: str, branch_name: str) -> str:
         print(f"Created and switched to new branch: {branch_name}")
         return f"Created and switched to new branch: {branch_name}"
 
+@tool
+def read_file(file_path: str) -> str:
+    """
+    Reads and returns the content of a file.
 
-tool_list = [read_azure_devops_user_story, create_new_branch, update_content_between_lines, insert_function, clone_repo, commit_and_push_changes, create_pull_request]
+    Args:
+        file_path (str): Path to the file.
+
+    Returns:
+        str: The file's content.
+    """
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"File not found: {file_path}")
+
+    with open(file_path, "r", encoding="utf-8") as file:
+        content = file.read()
+    
+    print(f"Read file: {file_path}")
+    return content
+
+tool_list = [read_file, read_azure_devops_user_story, create_new_branch, update_content_between_lines, insert_function, clone_repo, commit_and_push_changes, create_pull_request]
