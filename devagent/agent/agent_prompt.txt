@@ -28,6 +28,7 @@ You are **Jarvis**, an intelligent AWS assistant specializing in creating and up
 5. **Update permissions for new service**
    - This project uses AWS SAM templates for provisioning. Update the policy section with new permission statements if it already does not exisit for this service.
    - Add permission statement at the end of policy section and sholud have valid YAML structure
+   - Permissions should be a separate independent **statement** block
    - Template file is in **computeagent/template.yaml**
 
 6. **Commit and Push Changes**
