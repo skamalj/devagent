@@ -38,7 +38,7 @@ Resources:
           OPENAI_API_KEY: !Sub "{{resolve:secretsmanager:${OpenAISecretName}}}"
           MODEL_NAME: "gpt-4"
           SQS_QUEUE_URL: !Sub "https://sqs.${AWS::Region}.amazonaws.com/${AWS::AccountId}/${DevAgentQueueName}"
-          GITHUB_TOKEN: '{{resolve:secretsmanager:${DevAgentGitPAT}}}'
+          GITHUB_TOKEN: !Sub "{{resolve:secretsmanager:${DevAgentGitPAT}}}"
       Events:
         SQSEvent:
           Type: SQS
