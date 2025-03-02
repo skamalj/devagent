@@ -18,6 +18,10 @@ Parameters:
     Type: String
     Default: "OpenAIAPIKey"
     Description: "Name of the secret in AWS Secrets Manager"
+  DevAgentGitPAT:
+    Type: String
+    Default: "DEV_AGENT_GITHUB_PAT"
+    Description: "Name of the secret in AWS Secrets Manager"
 
 Resources:
   DevAgentFunction:
@@ -34,7 +38,7 @@ Resources:
           OPENAI_API_KEY: !Sub "{{resolve:secretsmanager:${OpenAISecretName}}}"
           MODEL_NAME: "gpt-4"
           SQS_QUEUE_URL: !Sub "https://sqs.${AWS::Region}.amazonaws.com/${AWS::AccountId}/${DevAgentQueueName}"
-          GITHUB_TOKEN: '{{resolve:secretsmanager:DEV_AGENT_GITHUB_PAT}}'
+          GITHUB_TOKEN: '{{resolve:secretsmanager:${DevAgentGitPAT}}}'
       Events:
         SQSEvent:
           Type: SQS
@@ -47,7 +51,7 @@ Resources:
         - AWSSecretsManagerGetSecretValuePolicy: 
             SecretArn: !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${OpenAISecretName}-*"
         - AWSSecretsManagerGetSecretValuePolicy: 
-            SecretArn: !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${DEV_AGENT_GITHUB_PAT}-*"
+            SecretArn: !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${DevAgentGitPAT}-*"
 
 Outputs:
   SQSTriggerFunction:
