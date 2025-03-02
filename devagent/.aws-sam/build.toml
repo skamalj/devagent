@@ -7,6 +7,6 @@ architecture = "x86_64"
 handler = "app.lambda_handler"
 manifest_hash = "45c857d209d9c9734365f1c47d5d2d52"
 packagetype = "Zip"
-functions = ["SQSTriggerFunction"]
+functions = ["DevAgentFunction"]
 
 [layer_build_definitions]

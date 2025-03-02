@@ -54,6 +54,6 @@ Resources:
             SecretArn: !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${DevAgentGitPAT}-*"
 
 Outputs:
-  SQSTriggerFunction:
+  DevAgentFunction:
     Description: "Lambda Function ARN triggered via SQS"
-    Value: !GetAtt SQSTriggerFunction.Arn
+    Value: !GetAtt DevAgentFunction.Arn
