@@ -20,7 +20,7 @@ Parameters:
     Description: "Name of the secret in AWS Secrets Manager"
   DevAgentGitPAT:
     Type: String
-    Default: "DEV_AGENT_GITHUB_PAT"
+    Default: "DEV_AGENT_GITHUB_PAT2"
     Description: "Name of the secret in AWS Secrets Manager"
   AzDevopsPat:
     Type: String

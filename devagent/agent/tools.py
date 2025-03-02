@@ -204,4 +204,4 @@ def read_file(file_path: str) -> str:
     print(f"Read file: {file_path}")
     return content
 
-tool_list = [ read_azure_devops_user_story, create_new_branch, update_content_between_lines, insert_function, clone_repo, commit_and_push_changes, create_pull_request]
+tool_list = [ read_file, read_azure_devops_user_story, create_new_branch, update_content_between_lines, insert_function, clone_repo, commit_and_push_changes, create_pull_request]
