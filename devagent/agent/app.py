@@ -61,9 +61,10 @@ def lambda_handler(event, context):
                 ("human", f"Story ID recieved from supervisor:  {body}"),
             ]
         }
-        response = app.invoke(input_message)
-        print(response)
-        return
+        for event in app.stream(input_message):
+            for value in event.values():
+                print("Assistant:", value["messages"][-1].content)
+    return
 
 
 
