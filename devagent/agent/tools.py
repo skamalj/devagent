@@ -64,11 +64,11 @@ def update_content_between_lines(file_path: str, start_line, end_line, new_conte
 @tool
 def commit_and_push_changes(local_path: str, branch_name: str, commit_message: str) -> str:
     """
-    Commits and pushes changes to a new branch.
+    Commits and pushes changes to a  branch.
     
     Args:
         local_path (str): Local repository path.
-        branch_name (str): Name of the new branch.
+        branch_name (str): Name of the working branch.
         commit_message (str): Commit message.
     """
     repo = git.Repo(local_path)
@@ -90,8 +90,8 @@ def commit_and_push_changes(local_path: str, branch_name: str, commit_message: s
     if "@" not in origin_url:  # Ensure we don't add multiple times
         new_origin_url = origin_url.replace("https://", f"https://{github_token}@")
         repo.remotes.origin.set_url(new_origin_url)
-        
-    repo.git.checkout('-b', branch_name)
+
+    repo.git.checkout(branch_name)
     repo.git.add(A=True)
     repo.git.commit('-m', commit_message)
     repo.git.push('--set-upstream', 'origin', branch_name)
@@ -157,5 +157,32 @@ def read_azure_devops_user_story(story_id):
         print(f"Failed to retrieve user story {story_id}: {response.text}")
         return None
 
+@tool
+def create_new_branch(local_path: str, branch_name: str) -> str:
+    """
+    Creates a new Git branch and switches to it.
 
-tool_list = [read_azure_devops_user_story, clone_repo, update_content_between_lines, insert_function, clone_repo, commit_and_push_changes, create_pull_request]
+    Args:
+        local_path (str): Local repository path.
+        branch_name (str): Name of the new branch.
+
+    Returns:
+        str: Status message.
+    """
+    repo = git.Repo(local_path)
+
+    # Fetch latest updates from remote
+    repo.git.fetch()
+
+    # Check if the branch already exists
+    if branch_name in repo.heads:
+        repo.git.checkout(branch_name)
+        print(f"Switched to existing branch: {branch_name}")
+        return f"Switched to existing branch: {branch_name}"
+    else:
+        repo.git.checkout('-b', branch_name)
+        print(f"Created and switched to new branch: {branch_name}")
+        return f"Created and switched to new branch: {branch_name}"
+
+
+tool_list = [read_azure_devops_user_story, create_new_branch, update_content_between_lines, insert_function, clone_repo, commit_and_push_changes, create_pull_request]
