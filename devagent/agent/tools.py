@@ -39,27 +39,34 @@ def insert_function(file_path: str, function_code: str) -> None:
         f.write('\n' + function_code + '\n')
 
 @tool
-def update_content_between_lines(file_path: str, start_line, end_line, new_content: str):
+def modify_content_between_lines(file_path: str, start_line: int, new_content: str, end_line: int = None):
     """
-    Replace content between the specified line numbers in a file.
+    Insert or replace content between the specified line numbers in a file.
     
     :param file_path: Path to the file.
-    :param start_line: Line number (1-based) where replacement starts (inclusive).
-    :param end_line: Line number (1-based) where replacement ends (inclusive).
+    :param start_line: Line number (1-based) where insertion or replacement starts (inclusive).
     :param new_content: List of new lines to insert (each string should end with a newline character if needed).
+    :param end_line: (Optional) Line number (1-based) where replacement ends (inclusive). 
+                     If None, new content is inserted without replacing existing lines.
     """
-    print(f"Updating {new_content} to file {file_path}")
+    print(f"Modifying file {file_path} at lines {start_line}-{end_line} with new content.")
+
     with open(file_path, 'r') as file:
         lines = file.readlines()
     
-    if start_line < 1 or end_line > len(lines) or start_line > end_line:
+    if start_line < 1 or (end_line is not None and (end_line > len(lines) or start_line > end_line)):
         raise ValueError("Invalid start or end line number.")
     
-    # Replace the lines in the specified range
-    lines[start_line - 1:end_line] = new_content
+    if end_line is None:
+        # Insert new content at the specified line
+        lines[start_line - 1:start_line - 1] = new_content
+    else:
+        # Replace content in the specified range
+        lines[start_line - 1:end_line] = new_content
     
     with open(file_path, 'w') as file:
         file.writelines(lines)
+
 
 @tool
 def commit_and_push_changes(local_path: str, branch_name: str, commit_message: str) -> str:
@@ -204,4 +211,4 @@ def read_file(file_path: str) -> str:
     print(f"Read file: {file_path}")
     return content
 
-tool_list = [ read_file, read_azure_devops_user_story, create_new_branch, update_content_between_lines, insert_function, clone_repo, commit_and_push_changes, create_pull_request]
+tool_list = [ read_file, read_azure_devops_user_story, create_new_branch, modify_content_between_lines, insert_function, clone_repo, commit_and_push_changes, create_pull_request]
