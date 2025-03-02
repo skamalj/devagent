@@ -80,6 +80,17 @@ def commit_and_push_changes(local_path: str, branch_name: str, commit_message: s
         config.set_value("user", "name", user_name)
         config.set_value("user", "email", user_email)
 
+        # Fetch GitHub Token from Environment Variable
+    github_token = os.getenv("GITHUB_TOKEN")
+    if not github_token:
+        raise ValueError("GitHub token is missing. Set the GITHUB_TOKEN environment variable.")
+
+    # Update remote URL to use the token for authentication
+    origin_url = repo.remotes.origin.url
+    if "@" not in origin_url:  # Ensure we don't add multiple times
+        new_origin_url = origin_url.replace("https://", f"https://{github_token}@")
+        repo.remotes.origin.set_url(new_origin_url)
+        
     repo.git.checkout('-b', branch_name)
     repo.git.add(A=True)
     repo.git.commit('-m', commit_message)
