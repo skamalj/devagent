@@ -22,6 +22,10 @@ Parameters:
     Type: String
     Default: "DEV_AGENT_GITHUB_PAT"
     Description: "Name of the secret in AWS Secrets Manager"
+  AzDevopsPat:
+    Type: String
+    Default: "AzDevopsPat"
+    Description: "Name of the secret in AWS Secrets Manager"
 
 Resources:
   DevAgentFunction:
@@ -41,6 +45,7 @@ Resources:
           MODEL_NAME: "gpt-4"
           SQS_QUEUE_URL: !Sub "https://sqs.${AWS::Region}.amazonaws.com/${AWS::AccountId}/${DevAgentQueueName}"
           GITHUB_TOKEN: !Sub "{{resolve:secretsmanager:${DevAgentGitPAT}}}"
+          AZ_DEVOPS_PAT: !Sub "{{resolve:secretsmanager:${AzDevopsPat}}}"
       Events:
         SQSEvent:
           Type: SQS
