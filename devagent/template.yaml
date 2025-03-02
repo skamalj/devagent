@@ -33,6 +33,8 @@ Resources:
       MemorySize: 512
       Architectures:
         - x86_64
+      Layers:
+        - arn:aws:lambda:ap-south-1:553035198032:layer:git-lambda2:8  # Git Layer
       Environment:
         Variables:
           OPENAI_API_KEY: !Sub "{{resolve:secretsmanager:${OpenAISecretName}}}"
