@@ -39,33 +39,31 @@ def insert_function(file_path: str, function_code: str) -> None:
         f.write('\n' + function_code + '\n')
 
 @tool
-def modify_content_between_lines(file_path: str, start_line: int, new_content: str, end_line: int = None):
+def modify_content_between_lines(file_path: str, start_line: int, new_content: list, end_line: int = None):
     """
     Insert or replace content between the specified line numbers in a file.
     
     :param file_path: Path to the file.
-    :param start_line: Line number (1-based) where insertion or replacement starts (inclusive).
+    :param start_line: Line number (1-based) where insertion or replacement starts.
     :param new_content: List of new lines to insert (each string should end with a newline character if needed).
-    :param end_line: (Optional) Line number (1-based) where replacement ends (inclusive). 
-                     If None, new content is inserted without replacing existing lines.
+    :param end_line: (Optional) Line number (1-based) where replacement ends (inclusive).
+                     If None, new content is inserted **between** start_line and start_line + 1 without overwriting.
     """
-    print(f"Modifying file {file_path} at lines {start_line}-{end_line} with new content.")
+    print(f"Modifying file {file_path} at lines {start_line}-{end_line if end_line else 'INSERT'} with new content.")
 
     with open(file_path, 'r') as file:
         lines = file.readlines()
-    
+
     if start_line < 1 or (end_line is not None and (end_line > len(lines) or start_line > end_line)):
         raise ValueError("Invalid start or end line number.")
-    
-    if end_line is None:
-        # Insert new content at the specified line
-        lines[start_line - 1:start_line - 1] = new_content
-    else:
-        # Replace content in the specified range
-        lines[start_line - 1:end_line] = new_content
-    
+
+    # Split into before, middle (to be modified), and after parts
+    before = lines[:start_line]  # Lines before the start_line (inclusive for insert mode)
+    after = lines[start_line if end_line is None else end_line:]  # Lines after start_line or end_line
+
+    # Merge and write back
     with open(file_path, 'w') as file:
-        file.writelines(lines)
+        file.writelines(before + new_content + after)
 
 
 @tool
