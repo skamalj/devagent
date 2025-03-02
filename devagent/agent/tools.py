@@ -34,6 +34,7 @@ def insert_function(file_path: str, function_code: str) -> None:
         file_path (str): Path to the Python file.
         function_code (str): Code of the function to insert.
     """
+    print("Adding tool to file")
     with open(file_path, 'a') as f:
         f.write('\n' + function_code + '\n')
 
@@ -47,6 +48,7 @@ def update_content_between_lines(file_path: str, start_line, end_line, new_conte
     :param end_line: Line number (1-based) where replacement ends (inclusive).
     :param new_content: List of new lines to insert (each string should end with a newline character if needed).
     """
+    print(f"Updating {new_content} to file {file_path}")
     with open(file_path, 'r') as file:
         lines = file.readlines()
     
@@ -74,8 +76,9 @@ def commit_and_push_changes(local_path: str, branch_name: str, commit_message: s
     repo.git.add(A=True)
     repo.git.commit('-m', commit_message)
     repo.git.push('--set-upstream', 'origin', branch_name)
-    return "Tool created and pushed"
     print("New tool created and pushed")
+    return "Tool created and pushed"
+    
 
 @tool
 def create_pull_request(repo_owner: str, repo_name: str, branch_name: str, base_branch: str, pr_title: str, pr_body: str) -> Dict:
@@ -110,6 +113,7 @@ def read_azure_devops_user_story(story_id):
     :param story_id: The ID of the user story to fetch.
     :return: The JSON response containing the user story details.
     """
+    
     az_token = os.getenv("AZ_DEVOPS_PAT")
     
     if not az_token:
@@ -128,6 +132,7 @@ def read_azure_devops_user_story(story_id):
     response = requests.get(url, headers=headers)
     
     if response.status_code == 200:
+        print("Story details fetched")
         return response.json()
     else:
         print(f"Failed to retrieve user story {story_id}: {response.text}")

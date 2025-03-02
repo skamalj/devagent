@@ -23,6 +23,7 @@ def should_continue(state: MessagesState) -> str:
 # Function to call the supervisor model
 def call_model(state: MessagesState): 
     with open("agent_prompt.txt", "r", encoding="utf-8") as file:
+        print("Supervisor called")
         system_message = file.read()
         messages = state["messages"]
         system_msg = SystemMessage(content=system_message)
