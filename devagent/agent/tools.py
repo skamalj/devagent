@@ -72,6 +72,14 @@ def commit_and_push_changes(local_path: str, branch_name: str, commit_message: s
         commit_message (str): Commit message.
     """
     repo = git.Repo(local_path)
+
+    user_name = os.getenv("GIT_USER_NAME", "DevAgent")
+    user_email = os.getenv("GIT_USER_EMAIL", "bobncharlie@mail")
+
+    with repo.config_writer() as config:
+        config.set_value("user", "name", user_name)
+        config.set_value("user", "email", user_email)
+
     repo.git.checkout('-b', branch_name)
     repo.git.add(A=True)
     repo.git.commit('-m', commit_message)
