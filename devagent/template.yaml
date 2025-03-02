@@ -8,36 +8,46 @@ Description: >
 Globals:
   Function:
     Timeout: 60
-    Environment:
-      Variables:
-        SQS_QUEUE_URL: !Ref DevAgentQueueUrl
-        GITHUB_TOKEN: '{{resolve:secretsmanager:DEV_AGENT_GITHUB_PAT}}'
-
+    
 Parameters:
-  DevAgentQueueUrl:
+  DevAgentQueueName:
     Type: String
-    Default: "https://sqs.ap-south-1.amazonaws.com/010526271896/LokiToJarvisQueue"
+    Default: "LokiToJarvisQueue"
     Description: "URL of the existing SQS queue for devagent"
+  OpenAISecretName:
+    Type: String
+    Default: "OpenAIAPIKey"
+    Description: "Name of the secret in AWS Secrets Manager"
 
 Resources:
-  SQSTriggerFunction:
+  DevAgentFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: agent/
       Handler: app.lambda_handler
-      Runtime: python3.10
+      Runtime: python3.12
+      MemorySize: 512
       Architectures:
         - x86_64
+      Environment:
+        Variables:
+          OPENAI_API_KEY: !Sub "{{resolve:secretsmanager:${OpenAISecretName}}}"
+          MODEL_NAME: "gpt-4"
+          SQS_QUEUE_URL: !Sub "https://sqs.${AWS::Region}.amazonaws.com/${AWS::AccountId}/${DevAgentQueueName}"
+          GITHUB_TOKEN: '{{resolve:secretsmanager:DEV_AGENT_GITHUB_PAT}}'
       Events:
         SQSEvent:
           Type: SQS
           Properties:
-            Queue: !Ref DevAgentQueueUrl
+            Queue: !Sub "arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:${DevAgentQueueName}"
             BatchSize: 5
       Policies:
         - SQSPollerPolicy:
             QueueName: "LokiToJarvisQueue"
-        - SecretsManagerReadWrite
+        - AWSSecretsManagerGetSecretValuePolicy: 
+            SecretArn: !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${OpenAISecretName}-*"
+        - AWSSecretsManagerGetSecretValuePolicy: 
+            SecretArn: !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${DEV_AGENT_GITHUB_PAT}-*"
 
 Outputs:
   SQSTriggerFunction:

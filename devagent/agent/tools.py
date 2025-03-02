@@ -75,7 +75,7 @@ def commit_and_push_changes(local_path: str, branch_name: str, commit_message: s
     repo.git.push('--set-upstream', 'origin', branch_name)
 
 @tool
-def create_pull_request(repo_owner: str, repo_name: str, branch_name: str, base_branch: str, pr_title: str, pr_body: str, github_token: str) -> Dict:
+def create_pull_request(repo_owner: str, repo_name: str, branch_name: str, base_branch: str, pr_title: str, pr_body: str) -> Dict:
     """
     Creates a pull request on GitHub.
     
@@ -86,11 +86,12 @@ def create_pull_request(repo_owner: str, repo_name: str, branch_name: str, base_
         base_branch (str): Base branch to merge into.
         pr_title (str): Title of the pull request.
         pr_body (str): Description of the pull request.
-        github_token (str): GitHub personal access token for authentication.
     
     Returns:
         Dict: JSON response from the GitHub API.
     """
+    github_token = os.getenv("GITHUB_TOKEN")
+    
     url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/pulls"
     headers = {"Authorization": f"token {github_token}", "Accept": "application/vnd.github.v3+json"}
     data = {"title": pr_title, "body": pr_body, "head": branch_name, "base": base_branch}
